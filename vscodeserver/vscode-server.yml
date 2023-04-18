@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: code-server
+  labels:
+    app: code-server
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: code-server
+  template:
+    metadata:
+      labels:
+        app: code-server
+    spec:
+      containers:
+        - name: code-server
+          image: codercom/code-server
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: code-storage
+              mountPath: /home/coder/project
+          env:
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: code-server-secret
+                  key: password
+      volumes:
+        - name: code-storage
+          persistentVolumeClaim:
+            claimName: code-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: code-server
+spec:
+  type: LoadBalancer
+  externalIPs:
+  - 192.168.58.2
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: code-server
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: code-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
