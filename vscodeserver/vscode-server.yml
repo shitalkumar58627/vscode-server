@@ -5,7 +5,7 @@ metadata:
   labels:
     app: code-server
 spec:
-  replicas: 4
+  replicas: 3
   selector:
     matchLabels:
       app: code-server
@@ -18,7 +18,7 @@ spec:
         - name: code-server
           image: codercom/code-server
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           volumeMounts:
             - name: code-storage
               mountPath: /home/coder/project
@@ -42,8 +42,8 @@ spec:
   externalIPs:
   - 192.168.58.2
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 80
+      targetPort: 80
       protocol: TCP
   selector:
     app: code-server
