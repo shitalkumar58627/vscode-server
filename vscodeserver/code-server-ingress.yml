@@ -3,12 +3,8 @@ kind: Ingress
 metadata:
   name: code-server-ingress
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  tls:
-  - hosts:
-    - cloudwithsk.tk
-    secretName: code-server-tls
   rules:
   - host: cloudwithsk.tk
     http:
